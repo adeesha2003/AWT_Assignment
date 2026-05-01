@@ -35,8 +35,13 @@ async function register() {
   try {
     const response = await fetch("register.php", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password
+      })
     });
 
     const data = await response.json();
@@ -47,10 +52,10 @@ async function register() {
       document.getElementById("registerPassword").value = "";
       showLogin();
     } else {
-      alert("Registration failed");
+      alert("Registration failed. Username may already exist.");
     }
   } catch (error) {
-    alert("Something went wrong. Please try again.");
+    alert("Registration error. Check backend connection.");
   }
 }
 
@@ -66,8 +71,13 @@ async function login() {
   try {
     const response = await fetch("login.php", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password
+      })
     });
 
     const data = await response.json();
@@ -81,10 +91,10 @@ async function login() {
 
       showDashboard();
     } else {
-      alert("Invalid username or password");
+      alert("Invalid username or password.");
     }
   } catch (error) {
-    alert("Login failed. Please try again.");
+    alert("Login error. Check backend connection.");
   }
 }
 
@@ -92,7 +102,7 @@ async function addTask() {
   const task = document.getElementById("taskInput").value.trim();
 
   if (task === "") {
-    alert("Please enter a task");
+    alert("Please enter a task.");
     return;
   }
 
@@ -103,7 +113,9 @@ async function addTask() {
         "Content-Type": "application/json",
         "Authorization": token
       },
-      body: JSON.stringify({ task })
+      body: JSON.stringify({
+        task: task
+      })
     });
 
     const data = await response.json();
@@ -112,10 +124,10 @@ async function addTask() {
       document.getElementById("taskInput").value = "";
       getTasks();
     } else {
-      alert("Failed to add task");
+      alert("Task adding failed.");
     }
   } catch (error) {
-    alert("Task could not be added.");
+    alert("Could not add task.");
   }
 }
 
@@ -123,7 +135,9 @@ async function getTasks() {
   try {
     const response = await fetch("get_task.php", {
       method: "GET",
-      headers: { "Authorization": token }
+      headers: {
+        "Authorization": token
+      }
     });
 
     const data = await response.json();
@@ -152,21 +166,13 @@ async function getTasks() {
       const div = document.createElement("div");
       div.className = "task-item";
 
-      const now = new Date();
-      const dateText = now.toLocaleDateString() + " " + now.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit"
-      });
-
       div.innerHTML = `
         <strong>Task ${index + 1}</strong><br>
         ${task.task}
-        <small>Added on: ${dateText}</small>
       `;
 
       taskList.appendChild(div);
     });
-
   } catch (error) {
     alert("Could not load tasks.");
   }
@@ -177,7 +183,9 @@ async function logout() {
     if (token) {
       await fetch("logout.php", {
         method: "POST",
-        headers: { "Authorization": token }
+        headers: {
+          "Authorization": token
+        }
       });
     }
   } catch (error) {
