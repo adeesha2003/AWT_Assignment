@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task Management App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Login Section -->
+    <div class="card" id="loginSection">
+      <h1>Welcome Back</h1>
+      <p class="subtitle">Login to manage your tasks</p>
+
+      <input type="text" id="loginUsername" placeholder="Enter username" />
+      <input type="password" id="loginPassword" placeholder="Enter password" />
+
+      <button onclick="login()">Login</button>
+
+      <p class="switch-text">
+        Don't have an account?
+        <span onclick="showRegister()">Register</span>
+      </p>
+    </div>
+
+    <!-- Register Section -->
+    <div class="card hidden" id="registerSection">
+      <h1>Create Account</h1>
+      <p class="subtitle">Register to start using the app</p>
+
+      <input type="text" id="registerUsername" placeholder="Enter username" />
+      <input type="password" id="registerPassword" placeholder="Enter password" />
+
+      <button onclick="register()">Register</button>
+
+      <p class="switch-text">
+        Already have an account?
+        <span onclick="showLogin()">Login</span>
+      </p>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div class="dashboard hidden" id="dashboardSection">
+      <div class="dashboard-header">
+        <div>
+          <h1>Task Dashboard</h1>
+          <p>Manage your daily tasks easily</p>
+        </div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+
+      <div class="task-box">
+        <input type="text" id="taskInput" placeholder="Enter new task" />
+        <button onclick="addTask()">Add Task</button>
+      </div>
+
+      <h2>Your Tasks</h2>
+      <div id="taskList" class="task-list"></div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
