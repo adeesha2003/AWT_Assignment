@@ -24,134 +24,165 @@ function showDashboard() {
 }
 
 async function register() {
-  const username = document.getElementById("registerUsername").value;
-  const password = document.getElementById("registerPassword").value;
+  const username = document.getElementById("registerUsername").value.trim();
+  const password = document.getElementById("registerPassword").value.trim();
 
   if (username === "" || password === "") {
     alert("Please enter username and password");
     return;
   }
 
-  const response = await fetch("register.php", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      username: username,
-      password: password
-    })
-  });
+  try {
+    const response = await fetch("register.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
 
-  const data = await response.json();
+    const data = await response.json();
 
-  if (data.status === "success") {
-    alert("Registration successful. Please login.");
-    showLogin();
-  } else {
-    alert("Registration failed");
+    if (data.status === "success") {
+      alert("Registration successful. Please login.");
+      document.getElementById("registerUsername").value = "";
+      document.getElementById("registerPassword").value = "";
+      showLogin();
+    } else {
+      alert("Registration failed");
+    }
+  } catch (error) {
+    alert("Something went wrong. Please try again.");
   }
 }
 
 async function login() {
-  const username = document.getElementById("loginUsername").value;
-  const password = document.getElementById("loginPassword").value;
+  const username = document.getElementById("loginUsername").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
 
   if (username === "" || password === "") {
     alert("Please enter username and password");
     return;
   }
 
-  const response = await fetch("login.php", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      username: username,
-      password: password
-    })
-  });
+  try {
+    const response = await fetch("login.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
 
-  const data = await response.json();
+    const data = await response.json();
 
-  if (data.status === "success") {
-    token = data.token;
-    localStorage.setItem("token", token);
-    showDashboard();
-  } else {
-    alert("Invalid username or password");
+    if (data.status === "success") {
+      token = data.token;
+      localStorage.setItem("token", token);
+
+      document.getElementById("loginUsername").value = "";
+      document.getElementById("loginPassword").value = "";
+
+      showDashboard();
+    } else {
+      alert("Invalid username or password");
+    }
+  } catch (error) {
+    alert("Login failed. Please try again.");
   }
 }
 
 async function addTask() {
-  const task = document.getElementById("taskInput").value;
+  const task = document.getElementById("taskInput").value.trim();
 
   if (task === "") {
     alert("Please enter a task");
     return;
   }
 
-  const response = await fetch("add_task.php", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": token
-    },
-    body: JSON.stringify({
-      task: task
-    })
-  });
+  try {
+    const response = await fetch("add_task.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token
+      },
+      body: JSON.stringify({ task })
+    });
 
-  const data = await response.json();
+    const data = await response.json();
 
-  if (data.status === "task added") {
-    document.getElementById("taskInput").value = "";
-    getTasks();
-  } else {
-    alert("Task adding failed");
+    if (data.status === "task added") {
+      document.getElementById("taskInput").value = "";
+      getTasks();
+    } else {
+      alert("Failed to add task");
+    }
+  } catch (error) {
+    alert("Task could not be added.");
   }
 }
 
 async function getTasks() {
-  const response = await fetch("get_task.php", {
-    method: "GET",
-    headers: {
-      "Authorization": token
+  try {
+    const response = await fetch("get_task.php", {
+      method: "GET",
+      headers: { "Authorization": token }
+    });
+
+    const data = await response.json();
+
+    const taskList = document.getElementById("taskList");
+    const taskCount = document.getElementById("taskCount");
+    const taskCountText = document.getElementById("taskCountText");
+
+    taskList.innerHTML = "";
+
+    if (data.status === "unauthorized") {
+      alert("Please login again.");
+      logout();
+      return;
     }
-  });
 
-  const data = await response.json();
-  const taskList = document.getElementById("taskList");
+    taskCount.innerText = data.length;
+    taskCountText.innerText = data.length + (data.length === 1 ? " Task" : " Tasks");
 
-  taskList.innerHTML = "";
+    if (data.length === 0) {
+      taskList.innerHTML = `<div class="empty">No tasks available. Add your first task.</div>`;
+      return;
+    }
 
-  if (data.status === "unauthorized") {
-    alert("Please login again");
-    logout();
-    return;
+    data.forEach(function(task, index) {
+      const div = document.createElement("div");
+      div.className = "task-item";
+
+      const now = new Date();
+      const dateText = now.toLocaleDateString() + " " + now.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+
+      div.innerHTML = `
+        <strong>Task ${index + 1}</strong><br>
+        ${task.task}
+        <small>Added on: ${dateText}</small>
+      `;
+
+      taskList.appendChild(div);
+    });
+
+  } catch (error) {
+    alert("Could not load tasks.");
   }
-
-  if (data.length === 0) {
-    taskList.innerHTML = `<div class="empty">No tasks added yet</div>`;
-    return;
-  }
-
-  data.forEach(function(task) {
-    const div = document.createElement("div");
-    div.className = "task-item";
-    div.innerText = task.task;
-    taskList.appendChild(div);
-  });
 }
 
 async function logout() {
-  await fetch("logout.php", {
-    method: "POST",
-    headers: {
-      "Authorization": token
+  try {
+    if (token) {
+      await fetch("logout.php", {
+        method: "POST",
+        headers: { "Authorization": token }
+      });
     }
-  });
+  } catch (error) {
+    console.log("Logout error");
+  }
 
   localStorage.removeItem("token");
   token = null;

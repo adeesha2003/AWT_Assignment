@@ -3,66 +3,137 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Task Management App</title>
+  <title>TaskMate</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <div class="container">
+<div class="page">
 
-    <!-- Login Section -->
-    <div class="card" id="loginSection">
-      <h1>Welcome Back</h1>
-      <p class="subtitle">Login to manage your tasks</p>
+  <nav class="navbar">
+    <div class="nav-logo">
+      <div class="logo-icon">✓</div>
+      <span>TaskMate</span>
+    </div>
+    <p>Task Management System</p>
+  </nav>
 
-      <input type="text" id="loginUsername" placeholder="Enter username" />
-      <input type="password" id="loginPassword" placeholder="Enter password" />
+  <!-- Login -->
+  <section class="auth-container" id="loginSection">
+    <div class="welcome-box">
+      <span class="badge">Task App</span>
+      <h1>Manage Your Tasks</h1>
+      <p>Register, login, add tasks, and view your task list.</p>
+    </div>
+
+    <div class="auth-card">
+      <h2>Login</h2>
+      <p class="text-muted">Sign in to continue</p>
+
+      <div class="input-group">
+        <label>Username</label>
+        <input type="text" id="loginUsername" placeholder="Enter username" />
+      </div>
+
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="Enter password" />
+      </div>
 
       <button onclick="login()">Login</button>
 
       <p class="switch-text">
-        Don't have an account?
-        <span onclick="showRegister()">Register</span>
+        New user?
+        <span onclick="showRegister()">Create account</span>
       </p>
     </div>
+  </section>
 
-    <!-- Register Section -->
-    <div class="card hidden" id="registerSection">
-      <h1>Create Account</h1>
-      <p class="subtitle">Register to start using the app</p>
+  <!-- Register -->
+  <section class="auth-container hidden" id="registerSection">
+    <div class="welcome-box">
+      <span class="badge">Register</span>
+      <h1>Create Your Account</h1>
+      <p>Create an account before adding your personal tasks.</p>
+    </div>
 
-      <input type="text" id="registerUsername" placeholder="Enter username" />
-      <input type="password" id="registerPassword" placeholder="Enter password" />
+    <div class="auth-card">
+      <h2>Register</h2>
+      <p class="text-muted">Create your new account</p>
+
+      <div class="input-group">
+        <label>Username</label>
+        <input type="text" id="registerUsername" placeholder="Create username" />
+      </div>
+
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="registerPassword" placeholder="Create password" />
+      </div>
 
       <button onclick="register()">Register</button>
 
       <p class="switch-text">
-        Already have an account?
+        Already registered?
         <span onclick="showLogin()">Login</span>
       </p>
     </div>
+  </section>
 
-    <!-- Dashboard Section -->
-    <div class="dashboard hidden" id="dashboardSection">
-      <div class="dashboard-header">
-        <div>
-          <h1>Task Dashboard</h1>
-          <p>Manage your daily tasks easily</p>
-        </div>
-        <button class="logout-btn" onclick="logout()">Logout</button>
+  <!-- Dashboard -->
+  <section class="dashboard hidden" id="dashboardSection">
+
+    <div class="dashboard-top">
+      <div>
+        <span class="badge">Dashboard</span>
+        <h1>My Tasks</h1>
+        <p>Add your tasks and view them in one place.</p>
       </div>
 
-      <div class="task-box">
-        <input type="text" id="taskInput" placeholder="Enter new task" />
-        <button onclick="addTask()">Add Task</button>
-      </div>
-
-      <h2>Your Tasks</h2>
-      <div id="taskList" class="task-list"></div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
 
-  </div>
+    <div class="stats-row">
+      <div class="stat-card">
+        <h3 id="taskCount">0</h3>
+        <p>Total Tasks</p>
+      </div>
 
-  <script src="script.js"></script>
+      <div class="stat-card">
+        <h3>Active</h3>
+        <p>Current Status</p>
+      </div>
+
+      <div class="stat-card">
+        <h3>My List</h3>
+        <p>Personal Tasks</p>
+      </div>
+    </div>
+
+    <div class="task-panel">
+      <div class="add-task-card">
+        <h2>Add New Task</h2>
+
+        <div class="task-input-row">
+          <input type="text" id="taskInput" placeholder="Enter your task here" />
+          <button onclick="addTask()">Add Task</button>
+        </div>
+      </div>
+
+      <div class="task-list-card">
+        <div class="list-title">
+          <h2>Task List</h2>
+          <span id="taskCountText">0 Tasks</span>
+        </div>
+
+        <div id="taskList" class="task-list"></div>
+      </div>
+    </div>
+
+  </section>
+
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
